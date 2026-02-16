@@ -18,9 +18,98 @@ document.addEventListener('DOMContentLoaded', function() {
     const fontSelect = document.getElementById('fontSelect');
     const saveBtn = document.getElementById('saveBtn');
     const paperBackground = document.querySelector('.paper-background');
+    const sealTextInput = document.getElementById('sealText');
+    const sealElement = document.querySelector('.seal');
+    const sealInner = document.querySelector('.seal-inner');
 
     // 当前生成的祝福语
     let currentBlessing = '';
+
+    // ==================== 印章定制功能 ====================
+    /**
+     * 更新印章文字
+     * 根据用户输入的文字自动调整印章大小和布局
+     * 保持印章的方向和风格不变
+     */
+    function updateSealText(text) {
+        if (!text || text.trim() === '') {
+            text = 'AI制作';
+        }
+        text = text.trim();
+        const charCount = text.length;
+
+        // 根据字数计算布局
+        let cols, rows;
+        if (charCount <= 2) {
+            cols = 1;
+            rows = charCount;
+        } else if (charCount <= 4) {
+            cols = 2;
+            rows = 2;
+        } else if (charCount <= 6) {
+            cols = 2;
+            rows = 3;
+        } else if (charCount <= 9) {
+            cols = 3;
+            rows = 3;
+        } else {
+            cols = 4;
+            rows = 3;
+        }
+
+        // 字体大小保持不变，只调整印章尺寸
+        const fontSize = 20;
+        const padding = 8;
+        const gap = 4;
+
+        // 根据字数计算印章尺寸
+        let sealSize;
+        if (charCount === 1) {
+            sealSize = 50;
+        } else if (charCount === 2) {
+            sealSize = 60;
+        } else if (charCount <= 4) {
+            sealSize = 75;
+        } else if (charCount <= 6) {
+            sealSize = 90;
+        } else if (charCount <= 9) {
+            sealSize = 110;
+        } else {
+            sealSize = 130;
+        }
+
+        // 生成印章HTML - 保持从右到左的阅读顺序
+        let html = '';
+        let charIndex = 0;
+        for (let col = 0; col < cols; col++) {
+            html += '<span>';
+            for (let row = 0; row < rows; row++) {
+                if (charIndex < charCount) {
+                    html += `<em>${text[charIndex]}</em>`;
+                    charIndex++;
+                }
+            }
+            html += '</span>';
+        }
+
+        // 更新印章内容
+        sealInner.innerHTML = html;
+
+        // 更新印章样式
+        sealElement.style.width = `${sealSize}px`;
+        sealElement.style.height = `${sealSize}px`;
+        sealElement.style.padding = `${padding}px`;
+        sealInner.style.fontSize = `${fontSize}px`;
+        sealInner.style.gap = `${gap}px`;
+    }
+
+    // 监听印章文字输入
+    sealTextInput.addEventListener('input', function() {
+        updateSealText(this.value);
+    });
+
+    // 初始化印章
+    updateSealText(sealTextInput.value);
 
     // 年份输入验证 - 只在失去焦点或按回车时验证，不干扰输入过程
     yearInput.addEventListener('blur', function() {
@@ -45,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fontSelect.addEventListener('change', function() {
         const selectedFont = this.value;
         // 移除所有字体类
-        blessingText.classList.remove('font-calligraphy', 'font-kaiti', 'font-songti', 'font-caoshu', 'font-yahei');
+        blessingText.classList.remove('font-calligraphy', 'font-songti', 'font-caoshu', 'font-yahei');
         // 添加选中的字体类
         blessingText.classList.add(`font-${selectedFont}`);
     });
@@ -195,6 +284,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         .paper-background::before,
                         .paper-background::after {
                             display: none !important;
+                        }
+                        .seal::before {
+                            background: transparent !important;
                         }
                     `;
                     clonedDoc.head.appendChild(style);

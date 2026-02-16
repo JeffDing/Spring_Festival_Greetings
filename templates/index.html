@@ -43,6 +43,7 @@
                         祝福语类别
                     </label>
                     <select id="categorySelect" class="font-select">
+                        <option value="拜年词">拜年词 - 8-16字，简短精巧，语言凝练</option>
                         <option value="朋友圈">朋友圈 - 50-80字，适合微信朋友圈</option>
                         <option value="微博">微博 - 140字以内，适合微博发布</option>
                         <option value="新春贺词">新春贺词 - 内容丰富，适合海报贺卡</option>
@@ -77,11 +78,19 @@
                     </label>
                     <select id="fontSelect" class="font-select">
                         <option value="calligraphy">书法字体 - 行云流水，古韵悠长</option>
-                        <option value="kaiti">楷体 - 端正工整，清晰易读</option>
                         <option value="songti">宋体 - 横细竖粗，典雅大方</option>
                         <option value="caoshu">草书 - 狂放不羁，艺术感强</option>
                         <option value="yahei">微软雅黑 - 现代简洁，清晰美观</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sealText">
+                        <i class="fas fa-stamp"></i>
+                        印章文字
+                    </label>
+                    <input type="text" id="sealText" placeholder="如：新春大吉、福" maxlength="12" value="AI制作">
+                    <div class="hint">自定义印章文字（1-12字），印章会自动调整大小</div>
                 </div>
 
                 <button id="generateBtn" class="btn-generate">
@@ -120,8 +129,8 @@
 
                             <div class="seal">
                                 <div class="seal-inner">
-                                    <span>新春</span>
-                                    <span>大吉</span>
+                                    <span><em>A</em><em>I</em></span>
+                                    <span><em>制</em><em>作</em></span>
                                 </div>
                             </div>
                         </div>
