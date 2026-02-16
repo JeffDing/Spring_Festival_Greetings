@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>春节祝福语生成器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入书法字体 - 更丰富的古风书法字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Long+Cang&family=Liu+Jian+Mao+Cao&family=Zhi+Mang+Xing&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@400;700;900&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 引入楷体在线字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <!-- 引入html2canvas库用于截图 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>春节祝福语生成器</h1>
+            <p class="subtitle">AI驱动，为您定制专属新春祝福</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 左侧：个性化定制区 -->
+            <div class="left-panel">
+                <div class="panel-header">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>个性化定制</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="year">
+                        <i class="fas fa-calendar-alt"></i>
+                        年份
+                    </label>
+                    <input type="number" id="year" min="1900" max="2100" value="2025" placeholder="请输入年份">
+                    <div class="hint">系统将自动推断农历年和生肖</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="categorySelect">
+                        <i class="fas fa-list"></i>
+                        祝福语类别
+                    </label>
+                    <select id="categorySelect" class="font-select">
+                        <option value="朋友圈">朋友圈 - 50-80字，适合微信朋友圈</option>
+                        <option value="微博">微博 - 140字以内，适合微博发布</option>
+                        <option value="新春贺词">新春贺词 - 内容丰富，适合海报贺卡</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="styleSelect">
+                        <i class="fas fa-palette"></i>
+                        祝福语风格
+                    </label>
+                    <select id="styleSelect" class="font-select">
+                        <option value="现代创新风格">现代创新风格 - 活泼有创意，融入流行语</option>
+                        <option value="古色古香风格">古色古香风格 - 古雅有韵味，文言文表达</option>
+                        <option value="传统风格" selected>传统风格 - 正式庄重，传统习俗</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="keyword">
+                        <i class="fas fa-key"></i>
+                        关键词（可选）
+                    </label>
+                    <input type="text" id="keyword" placeholder="如：团圆、事业、健康" maxlength="20">
+                    <div class="hint">填写关键词，AI将围绕关键词创作祝福语</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fontSelect">
+                        <i class="fas fa-font"></i>
+                        显示字体
+                    </label>
+                    <select id="fontSelect" class="font-select">
+                        <option value="calligraphy">书法字体 - 行云流水，古韵悠长</option>
+                        <option value="kaiti">楷体 - 端正工整，清晰易读</option>
+                        <option value="songti">宋体 - 横细竖粗，典雅大方</option>
+                        <option value="caoshu">草书 - 狂放不羁，艺术感强</option>
+                        <option value="yahei">微软雅黑 - 现代简洁，清晰美观</option>
+                    </select>
+                </div>
+
+                <button id="generateBtn" class="btn-generate">
+                    <i class="fas fa-magic"></i>
+                    生成祝福语
+                </button>
+
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <span>AI正在为您创作祝福语...</span>
+                </div>
+
+                <div id="errorMsg" class="error-msg hidden"></div>
+            </div>
+
+            <!-- 右侧：效果显示区 -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <i class="fas fa-scroll"></i>
+                    <span>祝福语展示</span>
+                </div>
+
+                <div class="display-area">
+                    <div class="paper-background">
+                        <div class="paper-content">
+                            <div class="lunar-info" id="lunarInfo">
+                                <span class="lunar-year">甲辰年</span>
+                                <span class="zodiac">龙年大吉</span>
+                            </div>
+
+                            <div class="blessing-text font-calligraphy" id="blessingText">
+                                <p>请在左侧设置您的个性化选项，</p>
+                                <p>点击"生成祝福语"按钮，</p>
+                                <p>AI将为您创作专属的春节祝福语。</p>
+                            </div>
+
+                            <div class="seal">
+                                <div class="seal-inner">
+                                    <span>新春</span>
+                                    <span>大吉</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="copyBtn" class="btn-copy" disabled>
+                            <i class="fas fa-copy"></i>
+                            复制祝福语
+                        </button>
+                        <button id="saveBtn" class="btn-save" disabled>
+                            <i class="fas fa-download"></i>
+                            保存为图片
+                        </button>
+                    </div>
+
+                    <div id="copySuccess" class="copy-success hidden">
+                        <i class="fas fa-check-circle"></i>
+                        已复制到剪贴板
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 春节祝福语生成器 | AI驱动 · 传统文化</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
