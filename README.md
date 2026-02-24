@@ -10,7 +10,7 @@
 
 ### 后端
 - **Flask 3.0.0**: Python Web 框架
-- **requests 2.31.0**: HTTP 请求库
+- **openai 1.12.0**: OpenAI Python SDK
 
 ### 前端
 - **原生 JavaScript**: 前端交互逻辑
@@ -88,7 +88,7 @@ chunjie/
 在运行应用前，需要配置以下环境变量：
 
 ```bash
-export API_URL="API_URL"
+export API_URL="API_BASE_URL"  # 例如: https://api.modelarts-maas.com/v2
 export MODEL_NAME="MODEL_NAME"
 export API_KEY="API_KEY"
 ```
@@ -106,7 +106,7 @@ pip install -r requirements.txt
 需要执行以下命令：
 
 ```bash
-export API_URL="API_URL"
+export API_URL="API_BASE_URL"  # 例如: https://api.modelarts-maas.com/v2
 export MODEL_NAME="MODEL_NAME"
 export API_KEY="API_KEY"
 ```

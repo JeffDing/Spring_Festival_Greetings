@@ -15,9 +15,9 @@ echo "========================================"
 echo ""
 
 # 设置环境变量
-export API_URL="API_URL"
-export MODEL_NAME="MODEL_NAME"
-export API_KEY="API_KEY"
+export API_URL="https://api.modelarts-maas.com/openai/v1"
+export MODEL_NAME="deepseek-v3.2"
+export API_KEY="your_api_key"
 
 # 检查环境变量是否设置成功
 if [ -z "$API_URL" ]; then

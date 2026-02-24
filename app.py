@@ -6,7 +6,7 @@
 import os
 import re
 import json
-import requests
+from openai import OpenAI
 from flask import Flask, render_template, request, jsonify
 from lunar_utils import get_lunar_info
 
@@ -16,6 +16,12 @@ app = Flask(__name__)
 API_URL = os.environ.get('API_URL')
 MODEL_NAME = os.environ.get('MODEL_NAME')
 API_KEY = os.environ.get('API_KEY')
+
+# 初始化OpenAI客户端
+client = OpenAI(
+    api_key=API_KEY,
+    base_url=API_URL.rsplit('/chat/completions', 1)[0] if API_URL else None
+)
 
 
 def clean_markdown(text, is_weibo=False):
@@ -148,28 +154,19 @@ def generate_blessing(year, category, style, keyword=None):
 请直接输出祝福语内容，不要包含任何其他解释或说明。"""
 
     # 调用API
-    headers = {
-        'Authorization': f'Bearer {API_KEY}',
-        'Content-Type': 'application/json'
-    }
-
-    data = {
-        'model': MODEL_NAME,
-        'messages': [
-            {'role': 'user', 'content': system_prompt}
-        ],
-        'temperature': 0.8,
-        'max_tokens': 500
-    }
-
     try:
-        response = requests.post(API_URL, headers=headers, json=data, timeout=30)
-        response.raise_for_status()
-        result = response.json()
+        response = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {'role': 'user', 'content': system_prompt}
+            ],
+            temperature=0.8,
+            max_tokens=500
+        )
 
         # 提取祝福语
-        if 'choices' in result and len(result['choices']) > 0:
-            blessing = result['choices'][0]['message']['content'].strip()
+        if response.choices and len(response.choices) > 0:
+            blessing = response.choices[0].message.content.strip()
             # 清除markdown语法和emoji，返回纯文字
             # 如果是微博风格，传入is_weibo=True以去掉##关键词行
             is_weibo = (category == "微博")
